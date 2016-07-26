@@ -1,0 +1,283 @@
+<!--
+  Copyright 2015 Natural Intelligence Solutions.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author: Michael Angelo Ruta (2016)
+-->
+
+<script type="text/x-red" data-template-name="dynamodb-in">
+    
+    <div class="form-row">
+    <p class="text-center">
+      <img src="../../images/aws.png">
+    </p>
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-key" style="width:140px"><i class="icon-cog"></i> Access Key ID</label>
+        <input type="text" id="node-input-key" placeholder="auto" style="width:60%">
+    </div>
+    <div class="form-row">
+        <label for="node-input-secret" style="width:140px"><i class="icon-cog"></i> Secret Access Key</label>
+        <input type="text" id="node-input-secret" placeholder="auto" style="width:60%">        
+    </div>
+    <div class="form-row">
+        <label for="node-input-region" style="width:140px"><i class="icon-globe"></i> AWS Region</label>
+        <select id="node-input-region" style="width:60%">
+            <option value="us-east-1">US East (N. Virginia)</option>
+            <option value="us-west-1">US West (N. California)</option>
+            <option value="us-west-2">US West (Oregon)</option>
+            <option value="eu-west-1">EU (Ireland)</option>
+            <option value="eu-central-1">EU (Frankfurt)</option>
+            <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
+            <option value="ap-northeast-2">Asia Pacific (Seoul)</option>
+            <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+            <option value="ap-southeast-2">Asia Pacific (Sydney)</option>
+            <option value="sa-east-1">South America (São Paulo)</option>
+        </select>        
+    </div>
+    <div class="form-row">
+        <label for="node-input-table" style="width:140px"><i class="fa fa-table"></i> Table</label>
+        <input type="text" id="node-input-table" placeholder="auto" style="width:60%" placeholder="default">        
+    </div>
+    <div class="form-row">
+        <label for="node-input-operation" style="width:140px"><i class="icon-cog"></i> Operation</label>
+        <select id="node-input-operation" style="width:60%">
+                <option value="">- use msg.topic -</option>
+                <option value="batchGetItem">batchGetItem</option>
+                <option value="batchWriteItem">batchWriteItem</option>
+                <option value="createTable">createTable</option>
+                <option value="deleteItem">deleteItem</option>
+                <option value="deleteTable">deleteTable</option>
+                <option value="describeLimits">describeLimits</option>
+                <option value="describeTable">describeTable</option>
+                <option value="getItem">getItem</option>
+                <option value="listTables">listTables</option>
+                <option value="putItem">putItem</option>
+                <option value="query">query</option>
+                <option value="scan">scan</option>
+                <option value="updateItem">updateItem</option>
+                <option value="updateTable">updateTable</option>
+        </select>        
+    </div>
+    <hr />
+    <div class="form-row">
+        <label>&nbsp;</label>
+        <input type="checkbox" id="node-input-detect" style="display: inline-block; width: auto; vertical-align: top;">
+           <label for="node-input-detect" style="width: 70%;">Using Simple Payload / Detect Data Types</label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-json_ddb" style="width:100px"><i class="icon-cog"></i>Wrap</label>
+        msg.<input type="text" id="node-input-json_ddb" placeholder="params.Item, params.Key" style="width:60%"> 
+    </div>
+    <div class="form-row">
+        <label for="node-input-ddb_json" style="width:100px"><i class="icon-cog"></i>Unwrap</label>
+        msg.<input type="text" id="node-input-ddb_json" placeholder="payload.Item" style="width:60%">        
+    </div>
+    <hr />
+
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div id="coucbase-in-note" class="form-tips">
+      <p><b>NOTE: </b><small>Remember, if you set your AWS credentials in the shared credentials file or via environment variables, it will automatically detect them, and you will not need to perform any manual credential configuration in your application. We do <strong>not</strong> recommend that you hard-code your AWS credentials in your application.</p>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="dynamodb-in">
+
+<h1>AWS SDK</h1>
+
+<p>This node takes <strong>msg.params</strong> as input parameter at return callback data in <strong>msg.payload</strong>
+
+<p>The official AWS SDK for JavaScript, available for browsers and mobile devices, or Node.js backends</p>
+
+<a href="http://aws.amazon.com/documentation/dynamodb/" target="_blank">
+    <button class="btn btn-default">
+        DynamoDB Documentation
+    </button>
+</a>
+<br /><br />
+<a href="http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/" target="_blank">
+    <button class="btn btn-default">
+        DynamoDB API Reference    
+    </button>
+</a>
+<br /><br />
+<a href="https://console.aws.amazon.com/dynamodb/home" target="_blank">
+    <button class="btn btn-default">
+        DynamoDB AWS Console
+    </button>
+</a>
+<br /><br />
+<a href="http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.LowLevelAPI.html" target="_blank">
+    <button class="btn btn-default">
+        DynamoDB Low-Level API
+    </button>
+</a>
+
+<hr />
+
+<h3>DynamoDB</h3>
+
+<p>DynamoDB is Amazon&quot;s high performance, all SSD backed, fully managed NoSQL database offering. This library was built in an attempt to make it a bit more easy to work with.</p>
+
+<p>
+    <a href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html" target="_blank">See full API documentation</a>
+</p>
+
+<hr />
+
+<h3>DynamoDB - API Reference</h3>
+
+<ul class="summary">
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#batchGetItem-property" title="batchGetItem">
+            <strong>batchGetItem</strong>(params = {})</a>
+        <div class="inline">
+            <p>The BatchGetItem operation returns the attributes of one or more items from one or more tables.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#batchWriteItem-property" title="batchWriteItem">
+            <strong>batchWriteItem</strong>(params = {})</a>
+        <div class="inline">
+            <p>The BatchWriteItem operation puts or deletes multiple items in one or more tables.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#createTable-property" title="createTable">
+            <strong>createTable</strong>(params = {})</a>
+        <div class="inline">
+            <p>The CreateTable operation adds a new table to your account.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#deleteItem-property" title="deleteItem">
+            <strong>deleteItem</strong>(params = {})</a>
+        <div class="inline">
+            <p>Deletes a single item in a table by primary key.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#deleteTable-property" title="deleteTable">
+            <strong>deleteTable</strong>(params = {})</a>
+        <div class="inline">
+            <p>The DeleteTable operation deletes a table and all of its items.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#describeLimits-property" title="describeLimits">
+            <strong>describeLimits</strong>(params = {})</a>
+        <div class="inline">
+            <p>Returns the current provisioned-capacity limits for your AWS account in a region, both for the region as a whole and for any one DynamoDB table that you create there.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#describeTable-property" title="describeTable">
+            <strong>describeTable</strong>(params = {})</a>
+        <div class="inline">
+            <p>Returns information about the table, including the current status of the table, when it was created, the primary key schema, and any indexes on the table.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#getItem-property" title="getItem">
+            <strong>getItem</strong>(params = {})</a>
+        <div class="inline">
+            <p>The GetItem operation returns a set of attributes for the item with the given primary key.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#listTables-property" title="listTables">
+            <strong>listTables</strong>(params = {})</a>
+        <div class="inline">
+            <p>Returns an array of table names associated with the current account and endpoint.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#putItem-property" title="putItem">
+            <strong>putItem</strong>(params = {})</a>
+        <div class="inline">
+            <p>Creates a new item, or replaces an old item with a new item.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#query-property" title="query">
+            <strong>query</strong>(params = {})</a>
+        <div class="inline">
+            <p>A Query operation uses the primary key of a table or a secondary index to directly access items from that table or index.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#scan-property" title="scan">
+            <strong>scan</strong>(params = {})</a>
+        <div class="inline">
+            <p>The Scan operation returns one or more items and item attributes by accessing every item in a table or a secondary index.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateItem-property" title="updateItem">
+            <strong>updateItem</strong>(params = {})</a>
+        <div class="inline">
+            <p>Edits an existing item&quot;s attributes, or adds a new item to the table if it does not already exist.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateTable-property" title="updateTable">
+            <strong>updateTable</strong>(params = {})</a>
+        <div class="inline">
+            <p>Modifies the provisioned throughput settings, global secondary indexes, or DynamoDB Streams settings for a given table.</p>
+        </div>
+    </li>
+    <li><a target="_blank" href="http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#waitFor-property" title="waitFor">
+            <strong>waitFor</strong>(state, params = {})</a>
+        <div class="inline">
+            <p>Waits for a given DynamoDB resource.</p>
+        </div>
+    </li>
+</ul>
+
+<hr />
+
+<h3>JSON Data Format :: AttributeValueList</h3>
+
+<ul>
+    <li><code>S</code> — (<code>String</code>)  <p>A String data type.</p></li>
+    <li><code>N</code> — (<code>String</code>)  <p>A Number data type.</p></li>
+    <li><code>B</code> — (<code>Buffer, Typed Array, Blob, String</code>)  <p>A Binary data type.</p></li>
+    <li><code>SS</code> — (<code>Array&lt;String&gt;</code>)  <p>A String Set data type.</p></li>
+    <li><code>NS</code> — (<code>Array&lt;String&gt;</code>)  <p>A Number Set data type.</p></li>
+    <li><code>BS</code> — (<code>Array&lt;Buffer, Typed Array, Blob, String&gt;</code>)  <p>A Binary Set data type.</p></li>
+    <li><code>M</code> — (<code>map&lt;map&gt;</code>)  <p>A Map of attribute values.</p></li>
+    <li><code>L</code> — (<code>Array&lt;map&gt;</code>)  <p>A List of attribute values.</p></li>
+    <li><code>NULL</code> — (<code>Boolean</code>)  <p>A Null data type.</p></li>
+    <li><code>BOOL</code> — (<code>Boolean</code>)  <p>A Boolean data type.</p></li>
+</ul>
+
+</script>
+
+<script type="text/javascript">
+    
+     RED.nodes.registerType('dynamodb-in',{
+        defaults: {
+            name: {value:""},
+            region: {value: "ap-southeast-1", required: true},
+            table: {value: "default", required: true},
+            operation: {value: ""},
+            json_ddb: {value: "params.Key"},
+            ddb_json: {value: "payload.Item"},
+            detect: {value: true}
+        },
+        credentials: {
+            key: {type:"text"},
+            secret: {type:"password"}
+        },
+        category: 'lloopp',
+        color: '#EBA202',
+        inputs:1,
+        outputs:1,
+        icon: "amazon.png",
+        label: function() {
+            return this.name||'dynamodb::'+this.table;
+        }
+    });
+
+</script>
