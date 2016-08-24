@@ -1,0 +1,20 @@
+{
+  "name": "node-red-contrib-aws-dynamodb",
+  "version": "0.0.2",
+  "description": "A Node-RED node wrapper for AWS dynamodb.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelmruta/node-red-contrib-aws-dynamodb.git"
+  },
+  "keywords": [
+    "dynamodb",
+    "aws",
+    "node-red"
+  ],
+  "author": "michaelmruta",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/michaelmruta/node-red-contrib-aws-dynamodb/issues"
+  },
+  "homepage": "https://github.com/michaelmruta/node-red-contrib-aws-dynamodb#readme"
+}
