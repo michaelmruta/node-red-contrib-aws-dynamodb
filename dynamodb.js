@@ -17,8 +17,6 @@
  *
  **/
 
-var vm = require('vm');
-
 module.exports = function(RED) {
     "use strict";
 
