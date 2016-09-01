@@ -3,6 +3,8 @@ node-red-contrib-aws-dynamodb
 
 A <a href="http://nodered.org" target="_new">Node-RED</a> node wrapper for AWS dynamodb.
 
+[![npm version](https://badge.fury.io/js/node-red-contrib-aws-dynamodb.svg)](https://badge.fury.io/js/node-red-contrib-aws-dynamodb)
+
 Install
 -------
 
