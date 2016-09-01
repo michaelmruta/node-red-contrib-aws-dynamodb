@@ -9,8 +9,9 @@ Install
 -------
 
 Run the following command in the root directory of your Node-RED install
-
+```bash
 npm install node-red-contrib-aws-dynamodb
+```
 
 Sample Workflow
 -------
